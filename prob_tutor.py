@@ -4,7 +4,7 @@ from datetime import datetime, date, timedelta
 
 # Cấu hình giao diện
 st.set_page_config(page_title="Gia sư Xác suất", page_icon="🎲")
-st.title("🎲 Gia sư Xác suất Soleil")
+st.title("🎲 Chào mừng em đến với gia sư Soleil")
 
 # Cấu hình API
 if "GOOGLE_API_KEY" in st.secrets:
@@ -36,7 +36,7 @@ def get_ai_response(prompt):
     # 1. ƯU TIÊN 1: Kiểm tra lời xin lỗi (Luôn kiểm tra đầu tiên)
     if check_forgiveness(prompt):
         if st.session_state.forgiven_today == date.today():
-            return "Chị chỉ rộng lượng một lần với em thôi! 🙄"
+            return "Chị chỉ rộng lượng một lần với em thôi! "
         else:
             st.session_state.warning_count = 0
             st.session_state.ban_time = None
@@ -74,7 +74,7 @@ def get_ai_response(prompt):
 for message in st.session_state.messages:
     with st.chat_message(message["role"]): st.markdown(message["content"])
 
-if prompt := st.chat_input("Gửi bài tập xác suất cho mình nhé..."):
+if prompt := st.chat_input("em có thắc mắc nào về xác suất không nè(´｡• ω •｡`) ♡"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"): st.markdown(prompt)
     with st.chat_message("assistant"):
