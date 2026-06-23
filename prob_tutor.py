@@ -47,7 +47,7 @@ def get_ai_response(prompt):
         try:
             return model.generate_content(f"Giải bài tập xác suất: {prompt}").text
         except:
-            return "thôi chị nghỉ ngơi đây , hôm nay là một ngày mệt mỏi với chị! tạm biệt em"
+            return "hồi nãy giải bài cho bạn kia mệt quá! em cho chị chút thời gian nghỉ ngơi nhé!"
             
     else:
         st.session_state.warning_count += 1
