@@ -9,7 +9,7 @@ st.title("🎲 Gia sư Xác suất Soleil")
 # Cấu hình API
 if "GOOGLE_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-2.5-flash')
 else:
     st.error("Chưa cấu hình API Key trong Secrets!")
     st.stop()
@@ -20,6 +20,7 @@ if "warning_count" not in st.session_state: st.session_state.warning_count = 0
 if "ban_time" not in st.session_state: st.session_state.ban_time = None
 if "forgiven_today" not in st.session_state: st.session_state.forgiven_today = None
 
+# Hàm kiểm tra lời xin lỗi bằng AI
 def check_forgiveness(prompt):
     try:
         evaluation_prompt = f"Người dùng vừa chat: '{prompt}'. Họ có đang thành khẩn xin lỗi hoặc hối hận không? Chỉ trả lời YES hoặc NO."
@@ -29,7 +30,7 @@ def check_forgiveness(prompt):
         return False
 
 def get_ai_response(prompt):
-    # 1. Logic Tha thứ
+    # 1. ƯU TIÊN SỐ 1: Kiểm tra lời xin lỗi
     if check_forgiveness(prompt):
         if st.session_state.forgiven_today == date.today():
             return "Chị chỉ rộng lượng một lần với em thôi! 🙄"
@@ -37,9 +38,9 @@ def get_ai_response(prompt):
             st.session_state.warning_count = 0
             st.session_state.ban_time = None
             st.session_state.forgiven_today = date.today()
-            return "Thôi được rồi, thấy thành khẩn nên chị tha! Lần sau mà lì nữa thì xác định nhé nhé! 😊"
+            return "Thôi được rồi, thấy thành khẩn nên chị tha! Lần sau mà lì nữa thì xác định nhé! 😊"
 
-    # 2. Logic Cấm chat
+    # 2. ƯU TIÊN SỐ 2: Kiểm tra lệnh cấm chat
     if st.session_state.ban_time:
         elapsed = datetime.now() - st.session_state.ban_time
         if elapsed < timedelta(minutes=5):
@@ -49,11 +50,14 @@ def get_ai_response(prompt):
             st.session_state.ban_time = None
             st.session_state.warning_count = 0
 
-    # 3. Logic Xác suất
+    # 3. ƯU TIÊN SỐ 3: Logic Xác suất
     is_probability = any(word in prompt.lower() for word in ["xác suất", "thống kê", "biến cố", "tính toán", "p("])
     
     if is_probability:
-        return model.generate_content(f"Giải bài tập xác suất: {prompt}").text
+        try:
+            return model.generate_content(f"Giải bài tập xác suất: {prompt}").text
+        except:
+            return "Chị đang bận một chút, em đợi lát nữa hỏi lại nhé!"
     else:
         st.session_state.warning_count += 1
         if st.session_state.warning_count >= 4:
@@ -63,7 +67,7 @@ def get_ai_response(prompt):
         elif st.session_state.warning_count == 2: return "⚠️ nhắc lại là chị chỉ giải bài tập xác suất thôi (-_-)"
         else: return "chị chỉ giải bài tập Xác suất thôi nha! "
 
-# Giao diện hiển thị
+# Giao diện hiển thị chat
 for message in st.session_state.messages:
     with st.chat_message(message["role"]): st.markdown(message["content"])
 
