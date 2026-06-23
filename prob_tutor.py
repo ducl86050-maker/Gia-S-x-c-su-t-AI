@@ -13,7 +13,7 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 st.title("🎲 Gia sư Xác suất Soleil")
-st.subheader("Chuyên gia giải bài tập Xác suất thống kê")
+st.subheader("Chuyên gia giải bài tập Xác suất thống kê (⁀ᗢ⁀)")
 
 # Cấu hình API
 if "GOOGLE_API_KEY" in st.secrets:
@@ -28,7 +28,7 @@ SYSTEM_INSTRUCTION = """
 Bạn là một chuyên gia về Xác suất Thống kê. 
 Nhiệm vụ của bạn là giải các bài tập về xác suất.
 Nếu người dùng hỏi về bất kỳ chủ đề nào khác (toán đại số, văn học, đời sống...), 
-bạn hãy trả lời lịch sự: 'Xin lỗi, mình chỉ có thể giúp bạn giải bài tập Xác suất thôi!'
+bạn hãy trả lời lịch sự: 'chị hơi bị khó tính đó nha , chị chỉ giúp em xác suất thôi!'
 """
 
 if "messages" not in st.session_state:
@@ -38,7 +38,7 @@ for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-if prompt := st.chat_input("Gửi bài tập xác suất cho mình nhé..."):
+if prompt := st.chat_input("em có thắc mắc gì đang cần chị giải đáp không nè (´｡• ω •｡`) ♡"):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
